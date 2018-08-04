@@ -19,7 +19,7 @@ from web3auth import views as web3auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', web3auth_views.login_view, {'template_name' : 'web3auth/login.html'}, name='login'),
+    path('login/', web3auth_views.login_view, {'template_name' : 'login.html'}, name='login'),
     path('signup/', web3auth_views.signup_view, name='signup'),
-    path('profile/'),
+    # path('profile/'),
 ]
