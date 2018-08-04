@@ -1,0 +1,1 @@
+pip install https://github.com/atereshkin/django-web3-auth/archive/master.zip
