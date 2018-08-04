@@ -1,0 +1,46 @@
+{
+  "name": "quarkchain-web3",
+  "version": "0.1.1",
+  "description": "QuarkChain wrapper over Ethereum web3",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "build:node": "babel index.js quarkchain-ethereum-tx.js -d ./dist",
+    "run:node": "babel index.js quarkchain-ethereum-tx.js -d ./dist && ndb dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/QuarkChain/quarkchain-web3.js.git"
+  },
+  "keywords": [
+    "quarkchain",
+    "ethereum",
+    "javascript"
+  ],
+  "author": "quarkchain.org",
+  "license": "LGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/QuarkChain/quarkchain-web3.js/issues"
+  },
+  "homepage": "https://github.com/QuarkChain/quarkchain-web3.js#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^5.2.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "ndb": "^1.0.18",
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "ethereum-common": "0.0.18",
+    "ethereumjs-util": "^5.2.0",
+    "web3": "^0.20.3"
+  }
+}
