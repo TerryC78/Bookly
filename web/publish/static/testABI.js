@@ -1,4 +1,4 @@
-[
+var testABI = [
 	{
 		"constant": false,
 		"inputs": [
