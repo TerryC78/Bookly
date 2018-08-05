@@ -1,7 +1,7 @@
 pragma solidity ^0.4.19;
 
 import "./Ownable.sol";
-import "./Safemath.sol";
+import "./SafeMath.sol";
 
 contract PubFree is Ownable {
     using  SafeMath for uint256;
@@ -17,17 +17,30 @@ contract PubFree is Ownable {
         mapping(uint => bool) publisedBooks;
     }
     
-    mapping(uint => bool) public users;
+    mapping(uint => User) public users;
+    mapping(address => uint) public userAccountToId;
     uint userCount;
 
+    uint oldBalance;
     
     function newUser(string name) external returns (uint) {
         uint newUserId = userCount;
+        userCount = userCount.add(1);
         users[newUserId] = User({
             name: name,
             account: msg.sender,
             balance: 0,
             reputation: 0
         });
+        userAccountToId[msg.sender] = newUserId;
+        return newUserId;
+    }
+    
+    function addFund() payable public returns (uint) {
+        uint userId = userAccountToId[msg.sender];
+        uint newBalance = address(this).balance;
+        users[userId].balance += newBalance - oldBalance;
+        oldBalance = newBalance;
+        return newBalance;
     }
 }
