@@ -3,8 +3,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <script type="text/javascript" src="{% static "quarkchain-web3.js-0.1.1/dist/quarkchain-web3.js" %}"></script>
-    <script type="text/javascript" src="{% static "web3auth/js/web3auth.js" %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quarkchain-web3@0.2.0/dist/quarkchain-web3.js"></script>
     <script type="text/javascript" src="{% static "testABI.js" %}"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
@@ -29,46 +28,71 @@
       </form>
     </div>
     <script type="text/javascript">
-web3auth.init('{{ login_token }}');
-var cryptoZombies;
-var userAccount;
-
-function startApp() {
-  console.log("123");
-  // $("#txStatus").text("123");
-
-  var cryptoZombiesAddress = "0xf448D6a43C05C3318193b0f828DFD4Bf80f514B53532392a";
-  cryptoZombies = new web3js.eth.Contract(testABI, cryptoZombiesAddress);
-  console.log(cryptoZombies);
-
-  // var accountInterval = setInterval(function() {
-  //   // Check if account has changed
-  //   // if (web3.eth.accounts[0] !== userAccount) {
-  //   //   userAccount = web3.eth.accounts[0];
-  //   //   // Call a function to update the UI with the new account
-  //   //   // getZombiesByOwner(userAccount)
-  //   //   // .then(displayZombies);
-  //   // }
-  // }, 100);
-}
 
 
-window.addEventListener('load', function() {
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    // Use Mist/MetaMask's provider
-    web3js = new Web3(web3.currentProvider);
-    console.log(web3js);
-    QuarkChain.injectWeb3(web3js, "http://jrpc.testnet.quarkchain.io:38391/")
-  } else {
-    // Handle the case where the user doesn't have Metamask installed
-    // Probably show them a message prompting them to install Metamask
-  }
 
-  // Now you can start your app & access web3 freely:
-  startApp()
+    function init(loginToken){
+      if (typeof web3 !== 'undefined') {
+        QuarkChain.injectWeb3(web3, "http://jrpc.testnet.quarkchain.io:38391");
+      } else {
+        const msg = "Couldn't detect web3. Make sure MetaMask is installed.";
+        alert(msg);
+        console.error(msg);
+      }
+    }
 
-})
+    function login(loginToken, form) {
+      msg = web3.toHex(loginToken);
+      from = web3.eth.accounts[0];
+      web3.personal.sign(msg, from, (err, result) => {
+        if (err) {
+          console.log(err, result);
+        } else {
+          $(form).find('input[name=signature]').val(result);
+          $(form).submit();
+        }
+      });
+    }
+
+    function startApp() {
+      console.log("123");
+      // $("#txStatus").text("123");
+
+      var MyContract = web3.qkc.contract(testABI);
+      // initiate contract for an address
+      var myContractInstance = MyContract.at('0xf448D6a43C05C3318193b0f828DFD4Bf80f514B53532392a');
+
+      (async function() {
+        let a = await myContractInstance.add(55, 35);
+        console.log(await a)
+      })()
+
+      // var accountInterval = setInterval(function() {
+      //   // Check if account has changed
+      //   // if (web3.eth.accounts[0] !== userAccount) {
+      //   //   userAccount = web3.eth.accounts[0];
+      //   //   // Call a function to update the UI with the new account
+      //   //   // getZombiesByOwner(userAccount)
+      //   //   // .then(displayZombies);
+      //   // }
+      // }, 100);
+    }
+
+    window.addEventListener('load', function() {
+      init('{{ login_token }}');
+      let loginBtn = $('[data-web3auth="login-button"]');
+      $(loginBtn).click(() => {
+        login('{{ login_token }}', $('[data-web3auth="login-form"]'));
+      });
+
+      const ethAddr = web3.eth.accounts[0];
+      const qkcAddr = QuarkChain.getQkcAddressFromEthAddress(ethAddr);
+
+      // Now you can start your app & access web3 freely:
+      startApp()
+
+    })
+
     </script>
   </body>
 </html>
