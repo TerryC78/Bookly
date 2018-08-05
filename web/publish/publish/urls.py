@@ -15,11 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import TemplateView
 from web3auth import views as web3auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', web3auth_views.login_view, {'template_name' : 'login.html'}, name='login'),
     path('signup/', web3auth_views.signup_view, name='signup'),
+    path('book/1', TemplateView.as_view(template_name="book.html")),
     # path('profile/'),
 ]
