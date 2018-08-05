@@ -1,17 +1,50 @@
-var cryptoZombies;
-var userAccount;
-
-function startApp() {
-  var cryptoZombiesAddress = "YOUR_CONTRACT_ADDRESS";
-  cryptoZombies = new web3js.eth.Contract(cryptoZombiesABI, cryptoZombiesAddress);
-  var accountInterval = setInterval(function() {
-    // Check if account has changed
-    if (web3.eth.accounts[0] !== userAccount) {
-      userAccount = web3.eth.accounts[0];
-      // Call a function to update the UI with the new account
-      getZombiesByOwner(userAccount)
-      .then(displayZombies); } }, 100);
-      // Start here
+function initFlyouts() {
+  initPublishedFlyoutMenus(
+    [{
+      "id": "491566478514253546",
+      "title": "Trending",
+      "url": "index.html",
+      "target": "",
+      "nav_menu": false,
+      "nonclickable": false
+    }, {
+      "id": "471949740448456849",
+      "title": "My Book",
+      "url": "my-book.html",
+      "target": "",
+      "nav_menu": false,
+      "nonclickable": false
+    }, {
+      "id": "679221979880523079",
+      "title": "My Wallet",
+      "url": "my-wallet.html",
+      "target": "",
+      "nav_menu": false,
+      "nonclickable": false
+    }],
+    "471949740448456849",
+    '',
+    'active',
+    false, {
+      "navigation\/item": "<li {{#id}}id=\"{{id}}\"{{\/id}} class=\"wsite-menu-item-wrap\n    {{#is_current}}site-menu-active{{\/is_current}}\n    {{#has_children}}site-menu-parent{{\/has_children}}\">\n  <a\n    {{^nonclickable}}\n      {{^nav_menu}}\n        href=\"{{url}}\"\n      {{\/nav_menu}}\n    {{\/nonclickable}}\n    {{#target}}\n      target=\"{{target}}\"\n    {{\/target}}\n    {{#membership_required}}\n      data-membership-required=\"{{.}}\"\n    {{\/membership_required}}\n    {{#nonclickable}}data-dead-link{{\/nonclickable}}\n    class=\"wsite-menu-item {{#nonclickable}}dead-link{{\/nonclickable}}\"\n    >\n    {{{title_html}}}\n  <\/a>\n  {{#has_children}}{{> navigation\/flyout\/list}}{{\/has_children}}\n<\/li>\n",
+      "navigation\/flyout\/list": "<ul class=\"site-submenu\">\n  {{#children}}{{> navigation\/flyout\/item}}{{\/children}}\n<\/ul>\n",
+      "navigation\/flyout\/item": "<li\n  {{#id}}id=\"{{id}}\"{{\/id}}\n  class=\"\n    site-submenu-item\n    {{#is_current}}site-submenu-active{{\/is_current}}\n    {{#has_children}}site-submenu-parent{{\/has_children}}\n  \"\n>\n  <a\n    {{^nonclickable}}\n      {{^nav_menu}}\n        href=\"{{url}}\"\n      {{\/nav_menu}}\n    {{\/nonclickable}}\n    {{#target}}\n      target=\"{{target}}\"\n    {{\/target}}\n    class=\"site-submenu-link\"\n  >{{{title_html}}}<\/a>\n\n  {{#has_children}}\n    {{> navigation\/flyout\/list}}\n  {{\/has_children}}\n<\/li>\n"
+    }, {
+      "hasCustomMinicart": true
     }
+  )
+}
 
-    function displayZombies(ids) { $("#zombies").empty(); for (id of ids) { // Look up zombie details from our contract. Returns a `zombie` object getZombieDetails(id) .then(function(zombie) { // Using ES6's "template literals" to inject variables into the HTML. // Append each one to our #zombies div $("#zombies").append(`<div class="zombie"> <ul> <li>Name: ${zombie.name}</li> <li>DNA: ${zombie.dna}</li> <li>Level: ${zombie.level}</li> <li>Wins: ${zombie.winCount}</li> <li>Losses: ${zombie.lossCount}</li> <li>Ready Time: ${zombie.readyTime}</li> </ul> </div>`); }); } } function createRandomZombie(name) { // This is going to take a while, so update the UI to let the user know // the transaction has been sent $("#txStatus").text("Creating new zombie on the blockchain. This may take a while..."); // Send the tx to our contract: return cryptoZombies.methods.createRandomZombie(name) .send({ from: userAccount }) .on("receipt", function(receipt) { $("#txStatus").text("Successfully created " + name + "!"); // Transaction was accepted into the blockchain, let's redraw the UI getZombiesByOwner(userAccount).then(displayZombies); }) .on("error", function(error) { // Do something to alert the user their transaction has failed $("#txStatus").text(error); }); } function feedOnKitty(zombieId, kittyId) { $("#txStatus").text("Eating a kitty. This may take a while..."); return cryptoZombies.methods.feedOnKitty(zombieId, kittyId) .send({ from: userAccount }) .on("receipt", function(receipt) { $("#txStatus").text("Ate a kitty and spawned a new Zombie!"); getZombiesByOwner(userAccount).then(displayZombies); }) .on("error", function(error) { $("#txStatus").text(error); }); } function levelUp(zombieId) { $("#txStatus").text("Leveling up your zombie..."); return cryptoZombies.methods.levelUp(zombieId) .send({ from: userAccount, value: web3.utils.toWei("0.001", "ether") }) .on("receipt", function(receipt) { $("#txStatus").text("Power overwhelming! Zombie successfully leveled up"); }) .on("error", function(error) { $("#txStatus").text(error); }); } function getZombieDetails(id) { return cryptoZombies.methods.zombies(id).call() } function zombieToOwner(id) { return cryptoZombies.methods.zombieToOwner(id).call() } function getZombiesByOwner(owner) { return cryptoZombies.methods.getZombiesByOwner(owner).call() } window.addEventListener('load', function() { // Checking if Web3 has been injected by the browser (Mist/MetaMask) if (typeof web3 !== 'undefined') { // Use Mist/MetaMask's provider web3js = new Web3(web3.currentProvider); } else { // Handle the case where the user doesn't have Metamask installed // Probably show them a message prompting them to install Metamask } // Now you can start your app & access web3 freely: startApp() })
+
+function initCustomerAccountsModels() {
+      (function(){_W.setup_rpc({"url":"\/ajax\/api\/JsonRPC\/CustomerAccounts\/","actions":{"CustomerAccounts":[{"name":"login","len":2,"multiple":false,"standalone":false},{"name":"logout","len":0,"multiple":false,"standalone":false},{"name":"getSessionDetails","len":0,"multiple":false,"standalone":false},{"name":"getAccountDetails","len":0,"multiple":false,"standalone":false},{"name":"getOrders","len":0,"multiple":false,"standalone":false},{"name":"register","len":4,"multiple":false,"standalone":false},{"name":"emailExists","len":1,"multiple":false,"standalone":false},{"name":"passwordReset","len":1,"multiple":false,"standalone":false},{"name":"passwordUpdate","len":3,"multiple":false,"standalone":false},{"name":"validateSession","len":1,"multiple":false,"standalone":false}]},"namespace":"_W.CustomerAccounts.RPC"});
+_W.setup_model_rpc({"rpc_namespace":"_W.CustomerAccounts.RPC","model_namespace":"_W.CustomerAccounts.BackboneModelData","collection_namespace":"_W.CustomerAccounts.BackboneCollectionData","bootstrap_namespace":"_W.CustomerAccounts.BackboneBootstrap","models":{"CustomerAccounts":{"_class":"CustomerAccounts.Model.CustomerAccounts","defaults":null,"validation":null,"types":null,"idAttribute":null,"keydefs":null}},"collections":{"CustomerAccounts":{"_class":"CustomerAccounts.Collection.CustomerAccounts"}},"bootstrap":[]});
+})();
+}
+if(document.createEvent && document.addEventListener) {
+  var initEvt = document.createEvent('Event');
+  initEvt.initEvent('customerAccountsModelsInitialized', true, false);
+  document.dispatchEvent(initEvt);
+} else if(document.documentElement.initCustomerAccountsModels === 0){
+  document.documentElement.initCustomerAccountsModels++
+}
