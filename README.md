@@ -11,6 +11,12 @@ python web/publish/manage.py runserver
 ### Platform
 We deployed through Quarkchain testnet, and the smart contract works. Our FE uses Django and we have a basic version of Django web server that talks with BE smart contract.
 
+### Library
+We used django-web3-auth library which can be installed here:
+```bash
+pip install https://github.com/atereshkin/django-web3-auth/archive/master.zip
+```
+
 ## Platform Users
 
 There will be two distinction of users:
