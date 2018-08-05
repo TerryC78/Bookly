@@ -41,6 +41,9 @@ contract PubFree is Ownable {
         uint threadCount;
         mapping(uint => ReviewThread) threads;
         int rate;
+        
+        mapping(uint => bool) purchasedUser;
+        uint purchasedCount;
     }
     
     mapping(uint => User) public users;
@@ -79,13 +82,28 @@ contract PubFree is Ownable {
         for (uint idx2 = 0; idx2 < user.publishedBooksCount; idx2++) {
             published[idx2] = users[userId].publisedBooks[idx2];
         }
-        return (user.name, user.account, user.balance, user.reputation, purchased, published);
+        return (user.name, user.account, user.balance.div(1 ether), user.reputation, purchased, published);
+    }
+    
+    function purchase(uint bookId) public returns (uint) {
+        uint userId = userAccountToId[msg.sender];
+        Book book = books[bookId];
+        require(users[userId].balance > book.price);
+        users[userId].balance -= book.price;
+        uint newPurchasedBookId = users[userId].purchasedBookCount;
+        users[userId].purchasedBooks[newPurchasedBookId] = bookId;
+        users[userId].purchasedBookCount++;
+        books[bookId].purchasedUser[userId] = true;
+        books[bookId].purchasedCount++;
     }
     
     function newBook(string title, uint price, string password) external returns (uint) {
         uint newBookId = bookCount;
         bookCount = bookCount.add(1);
-        books[newBookId] = Book({title: title, ownerId: msg.sender, price: price, totalSold: 0, password: password, publishTime: now, threadCount: 0, rate: 0});
+        uint etherPrice = price.mul(1 ether);
+        books[newBookId] = Book({title: title, ownerId: msg.sender, price: etherPrice, totalSold: 0, password: password, publishTime: now, threadCount: 0, rate: 0, purchasedCount: 0});
         return newBookId;
     }
+    
+    
 }
