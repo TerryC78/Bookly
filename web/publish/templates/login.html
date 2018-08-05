@@ -681,18 +681,14 @@
       </ul>
     </div>
 
-        <div class="product-grid__info" style="text-align:center">
-          <div class="product-grid__button">
-            <a href="http://www.coinconsumer.net/store/p1/Measure_What_Matters%3A_How_Google%2C_Bono%2C_and_the_Gates_Foundation_Rock_the_World_with_OKRs.html" class="wsite-button wsite-button-small wsite-button-highlight">
-    <span class="wsite-button-inner">Log in</span>
-    </a>
-          </div>
-        </div>
-
-        <form action="" method="POST" data-web3auth="login-form">
+    <div class="product-grid__info" style="text-align:center">
+      <div class="product-grid__button">
+          <form action="" method="POST" data-web3auth="login-form">
           {% csrf_token %} {{ form.as_p }}
           <button type="submit" data-web3auth="login-button">Log In</button>
-        </form>
+    	  </form>
+      </div>
+    </div>
 
     <div id="wrapper">
       <div id="content-wrapper" class="main-content">
