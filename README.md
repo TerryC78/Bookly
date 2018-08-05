@@ -7,6 +7,10 @@ git clone https://github.com/TerryC78/Bookly.git
 pip install https://github.com/atereshkin/django-web3-auth/archive/master.zip
 python web/publish/manage.py runserver
 ```
+## Platform/Tool/Libraries we used
+### Platform
+We deployed through Quarkchain testnet, and the smart contract works. Our FE uses Django and we have a basic version of Django web server that talks with BE smart contract.
+
 ## Platform Users
 
 There will be two distinction of users:
