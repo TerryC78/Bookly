@@ -1,4 +1,4 @@
-# Bookly
+# PubFree
 
 ## TL;DR
 To try our code by a local Django server:
