@@ -19,9 +19,36 @@ contract PubFree is Ownable {
         uint publishedBooksCount;
     }
     
+    struct Review {
+        string title;
+        uint createTime;
+        address owner;
+        int rate;
+    }
+    
+    struct ReviewThread {
+        uint reviewCount;
+        mapping(uint => Review) reviews;
+    }
+    
+    struct Book {
+        string title;
+        address ownerId;
+        uint price;
+        uint totalSold;
+        string password;
+        uint publishTime;
+        uint threadCount;
+        mapping(uint => ReviewThread) threads;
+        int rate;
+    }
+    
     mapping(uint => User) public users;
     mapping(address => uint) public userAccountToId;
     uint userCount;
+    
+    mapping(uint => Book) public books;
+    uint bookCount;
 
     uint oldBalance;
     
@@ -41,17 +68,24 @@ contract PubFree is Ownable {
         return newBalance;
     }
     
-    function getUserInfo() external returns (string name, address account, uint balance, uint reputation, uint[], uint[]) {
+    function getUserInfo() external view returns (string name, address account, uint balance, uint reputation, uint[], uint[]) {
         uint userId = userAccountToId[msg.sender];
-        User user = users[userId];
-        uint[] purchased;
-        uint[] published;
+        User memory user = users[userId];
+        uint[] memory purchased = new uint[](user.purchasedBookCount);
+        uint[] memory published = new uint[](user.publishedBooksCount);
         for (uint idx1 = 0; idx1 < user.purchasedBookCount; idx1++) {
-            purchased.push(user.purchasedBooks[idx1]);
+            purchased[idx1] = users[userId].purchasedBooks[idx1];
         }
         for (uint idx2 = 0; idx2 < user.publishedBooksCount; idx2++) {
-            published.push(user.publisedBooks[idx2]);
+            published[idx2] = users[userId].publisedBooks[idx2];
         }
         return (user.name, user.account, user.balance, user.reputation, purchased, published);
+    }
+    
+    function newBook(string title, uint price, string password) external returns (uint) {
+        uint newBookId = bookCount;
+        bookCount = bookCount.add(1);
+        books[newBookId] = Book({title: title, ownerId: msg.sender, price: price, totalSold: 0, password: password, publishTime: now, threadCount: 0, rate: 0});
+        return newBookId;
     }
 }
