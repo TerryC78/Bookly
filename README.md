@@ -17,6 +17,12 @@ We used `django-web3-auth` library which can be installed here:
 pip install https://github.com/atereshkin/django-web3-auth/archive/master.zip
 ```
 
+## Smart Contract
+### [Separate contracts](https://github.com/TerryC78/Bookly/tree/master/contract)
+Each identity is a contract in our first try. But after checking with Quarkchain experts, we were suggested to merge identities into one contract, which is below.
+
+### [One contract version](https://github.com/TerryC78/Bookly/blob/master/contract/PubFreeRefactor.sol)
+
 ## Platform Users
 
 There will be two distinction of users:
